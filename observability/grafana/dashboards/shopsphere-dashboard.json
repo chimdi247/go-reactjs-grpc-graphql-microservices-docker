@@ -1,0 +1,1481 @@
+{
+  "id": null,
+  "uid": "shopsphere-app",
+  "title": "ShopSphere \u2014 All Services Dashboard",
+  "tags": [
+    "shopsphere",
+    "microservices"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "id": 2,
+      "title": "Uptime & business KPI",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 3,
+      "title": "account up",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"account\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "title": "catalog up",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"catalog\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "title": "order up",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"order\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 6,
+      "title": "graphql-gateway up",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"graphql-gateway\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 7,
+      "title": "Total users (business KPI)",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "account_total_users",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Request rate, errors & successful/failed counts",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 9,
+      "title": "Request rate by service",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(app_requests_total{job=\"account\"}[1m]))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "account"
+        },
+        {
+          "expr": "sum(rate(app_requests_total{job=\"catalog\"}[1m]))",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "catalog"
+        },
+        {
+          "expr": "sum(rate(app_requests_total{job=\"order\"}[1m]))",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "order"
+        },
+        {
+          "expr": "sum(rate(app_requests_total{job=\"graphql-gateway\"}[1m]))",
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "graphql-gateway"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "gRPC error rate % (account/catalog/order)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "(sum by (job) (rate(app_requests_total{job=~\"account|catalog|order\",status!=\"OK\"}[5m])) / sum by (job) (rate(app_requests_total{job=~\"account|catalog|order\"}[5m]))) * 100",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "{{job}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Successful vs failed requests \u2014 gRPC services",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(app_requests_total{job=~\"account|catalog|order\",status=\"OK\"}[1m]))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "successful"
+        },
+        {
+          "expr": "sum(increase(app_requests_total{job=~\"account|catalog|order\",status!=\"OK\"}[1m]))",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "failed"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Successful vs failed requests \u2014 graphql-gateway (HTTP)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(app_requests_total{job=\"graphql-gateway\",status=~\"2..|3..\"}[1m]))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "successful"
+        },
+        {
+          "expr": "sum(increase(app_requests_total{job=\"graphql-gateway\",status=~\"4..|5..\"}[1m]))",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "failed"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "Latency \u2014 SLI/SLO (P50 / P95 / P99)",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 14,
+      "title": "P95 latency by service",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"account\"}[5m])))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "account"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"catalog\"}[5m])))",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "catalog"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"order\"}[5m])))",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "order"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"graphql-gateway\"}[5m])))",
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "graphql-gateway"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "P99 latency by service (SLO < 500ms)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"account\"}[5m])))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "account"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"catalog\"}[5m])))",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "catalog"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"order\"}[5m])))",
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "order"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(app_request_duration_milliseconds_bucket{job=\"graphql-gateway\"}[5m])))",
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "graphql-gateway"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 400
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 16,
+      "title": "Availability SLO (target 99.9%)",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 17,
+      "title": "account availability",
+      "type": "gauge",
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - ((sum(rate(app_requests_total{job=\"account\",status!=\"OK\"}[1h])) / sum(rate(app_requests_total{job=\"account\"}[1h]))) * 100 OR on() vector(0))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 99
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 18,
+      "title": "catalog availability",
+      "type": "gauge",
+      "gridPos": {
+        "x": 6,
+        "y": 32,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - ((sum(rate(app_requests_total{job=\"catalog\",status!=\"OK\"}[1h])) / sum(rate(app_requests_total{job=\"catalog\"}[1h]))) * 100 OR on() vector(0))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 99
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 19,
+      "title": "order availability",
+      "type": "gauge",
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - ((sum(rate(app_requests_total{job=\"order\",status!=\"OK\"}[1h])) / sum(rate(app_requests_total{job=\"order\"}[1h]))) * 100 OR on() vector(0))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 99
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 20,
+      "title": "graphql-gateway availability",
+      "type": "gauge",
+      "gridPos": {
+        "x": 18,
+        "y": 32,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - ((sum(rate(app_requests_total{job=\"graphql-gateway\",status=~\"5..\"}[1h])) / sum(rate(app_requests_total{job=\"graphql-gateway\"}[1h]))) * 100 OR on() vector(0))",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 99
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "Platform \u2014 host & container CPU/memory (alerts fire above 50%)",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 22,
+      "title": "Host CPU utilization %",
+      "type": "gauge",
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[2m])) * 100)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 23,
+      "title": "Host Memory utilization %",
+      "type": "gauge",
+      "gridPos": {
+        "x": 6,
+        "y": 41,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 24,
+      "title": "Host CPU & memory over time",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 41,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[2m])) * 100)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "CPU %"
+        },
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Memory %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 25,
+      "title": "Container CPU % by service",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 49,
+        "w": 12,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name=~\"shopsphere-.+\"}[2m])) * 100",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 26,
+      "title": "Container memory % by service",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 49,
+        "w": 12,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "(container_memory_working_set_bytes{name=~\"shopsphere-.+\"} / container_spec_memory_limit_bytes{name=~\"shopsphere-.+\"}) * 100",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "spanNulls": true,
+            "showPoints": "never",
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 27,
+      "title": "Firing alerts (Alertmanager)",
+      "type": "row",
+      "gridPos": {
+        "x": 0,
+        "y": 58,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 28,
+      "title": "Active Prometheus alerts",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 24,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      }
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "name": "Alerts",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "enable": true,
+        "iconColor": "red"
+      }
+    ]
+  },
+  "templating": {
+    "list": []
+  },
+  "links": []
+}

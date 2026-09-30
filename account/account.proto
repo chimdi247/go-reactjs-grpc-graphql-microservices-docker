@@ -1,0 +1,64 @@
+syntax = "proto3";
+package pb;
+
+message Account {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+}
+
+message PostAccountRequest {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message PostAccountResponse {
+    Account account = 1;
+}
+
+message GetAccountRequest {
+    string id = 1;
+}
+
+message GetAccountResponse {
+    Account account = 1;
+}
+
+message GetAccountsRequest {
+    uint64 skip = 1;
+    uint64 take = 2;
+}
+
+message GetAccountsResponse {
+    repeated Account accounts = 1;
+}
+
+message AuthenticateRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message AuthenticateResponse {
+    Account account = 1;
+}
+
+message GetAccountsCountRequest {
+}
+
+message GetAccountsCountResponse {
+    uint64 count = 1;
+}
+
+service AccountService {
+    rpc PostAccount (PostAccountRequest) returns (PostAccountResponse) {
+    }
+    rpc GetAccount (GetAccountRequest) returns (GetAccountResponse) {
+    }
+    rpc GetAccounts (GetAccountsRequest) returns (GetAccountsResponse) {
+    }
+    rpc Authenticate (AuthenticateRequest) returns (AuthenticateResponse) {
+    }
+    rpc GetAccountsCount (GetAccountsCountRequest) returns (GetAccountsCountResponse) {
+    }
+}

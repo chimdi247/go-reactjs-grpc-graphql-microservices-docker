@@ -1,0 +1,27 @@
+FROM golang:1.22-alpine AS build
+RUN apk add --no-cache gcc g++ make ca-certificates git
+WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
+COPY go.mod go.sum* ./
+COPY pkg pkg
+COPY account account
+COPY catalog catalog
+COPY order order
+COPY graphql graphql
+ENV GOFLAGS=-mod=mod
+RUN go mod tidy
+# Regenerates graphql/generated.go + models_gen.go from schema.graphql via
+# the go:generate directive in graphql/main.go — this is the project's
+# own documented codegen mechanism (see README), just run at image build
+# time instead of being committed to source, so it's always in sync with
+# schema.graphql (including the login/me/totalAccounts additions).
+RUN go generate ./graphql/...
+RUN go build -o /go/bin/app ./graphql
+
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates wget
+WORKDIR /usr/bin
+COPY --from=build /go/bin/app .
+EXPOSE 8080 8081
+HEALTHCHECK --interval=10s --timeout=5s --retries=10 --start-period=15s \
+  CMD wget -qO- http://localhost:8080/health || exit 1
+CMD ["app"]

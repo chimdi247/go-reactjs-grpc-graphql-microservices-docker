@@ -1,0 +1,46 @@
+groups:
+  # ── Resource utilization — fires when CPU or memory > 50% ──
+  - name: resource-utilization
+    rules:
+      - alert: HostHighCPUUsage
+        expr: (100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100)) > 50
+        for: 1m
+        labels: {severity: warning, category: capacity}
+        annotations:
+          summary: "Host CPU usage above 50% ({{ $labels.instance }})"
+          description: "Host CPU utilization is {{ printf \"%.1f\" $value }}%, above the 50% threshold for 1m."
+
+      - alert: HostHighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 50
+        for: 1m
+        labels: {severity: warning, category: capacity}
+        annotations:
+          summary: "Host memory usage above 50% ({{ $labels.instance }})"
+          description: "Host memory utilization is {{ printf \"%.1f\" $value }}%, above the 50% threshold for 1m."
+
+      - alert: ContainerHighCPUUsage
+        expr: (sum by (name) (rate(container_cpu_usage_seconds_total{name=~"shopsphere-.+"}[2m])) * 100) > 50
+        for: 1m
+        labels: {severity: warning, category: capacity}
+        annotations:
+          summary: "Container {{ $labels.name }} CPU usage above 50%"
+          description: "Container {{ $labels.name }} CPU utilization is {{ printf \"%.1f\" $value }}%, above the 50% threshold for 1m."
+
+      - alert: ContainerHighMemoryUsage
+        expr: (container_memory_working_set_bytes{name=~"shopsphere-.+"} / container_spec_memory_limit_bytes{name=~"shopsphere-.+"} * 100) > 50 and container_spec_memory_limit_bytes{name=~"shopsphere-.+"} > 0
+        for: 1m
+        labels: {severity: warning, category: capacity}
+        annotations:
+          summary: "Container {{ $labels.name }} memory usage above 50%"
+          description: "Container {{ $labels.name }} memory utilization is {{ printf \"%.1f\" $value }}%, above the 50% threshold for 1m."
+
+  # ── Service health ──
+  - name: service-health
+    rules:
+      - alert: ServiceDown
+        expr: up{job=~"account|catalog|order|graphql-gateway"} == 0
+        for: 30s
+        labels: {severity: critical, category: availability}
+        annotations:
+          summary: "{{ $labels.job }} is down"
+          description: "{{ $labels.job }} ({{ $labels.instance }}) has been unreachable for 30s or more."

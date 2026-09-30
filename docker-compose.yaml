@@ -1,0 +1,482 @@
+# ──────────────────────────────────────────────────────────────────────────
+# ShopSphere (go-grpc-graphql-microservices) — single-file local stack
+#
+#   docker compose up -d --build
+#
+# Brings up the full app (account_db, order_db, catalog_db, account,
+# catalog, order, graphql gateway, React frontend) plus the full
+# observability stack (otel-collector, tempo, loki, promtail, prometheus,
+# alertmanager, node-exporter, cadvisor, grafana) and a local mail catcher
+# (mailpit) for alert emails.
+#
+#   Frontend      → http://localhost:5173
+#   Admin login   → admin@example.com / password123  (seeded automatically)
+#   GraphQL API   → http://localhost:8080/graphql  (playground at /playground)
+#   Grafana       → http://localhost:3001          (admin / admin)
+#   Alertmanager  → http://localhost:9093
+#   Mail inbox    → http://localhost:8025
+#
+# See LOCAL_DEV.md for full details and troubleshooting.
+# ──────────────────────────────────────────────────────────────────────────
+
+networks:
+  shopsphere-network:
+    name: shopsphere-network
+    driver: bridge
+
+volumes:
+  account_db_data:
+  order_db_data:
+  catalog_db_data:
+  grafana_data:
+  prometheus_data:
+  alertmanager_data:
+  loki_data:
+  tempo_data:
+
+services:
+  # ══════════════════════════════════════════════════════════════════════
+  # Data stores
+  # ══════════════════════════════════════════════════════════════════════
+
+  account_db:
+    build:
+      context: .
+      dockerfile: ./docker/account.db.dockerfile
+    container_name: shopsphere-account-db
+    environment:
+      POSTGRES_DB: akhil
+      POSTGRES_USER: akhil
+      POSTGRES_PASSWORD: "123456"
+    volumes:
+      - account_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks: [shopsphere-network]
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U akhil"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  order_db:
+    build:
+      context: .
+      dockerfile: ./docker/order.db.dockerfile
+    container_name: shopsphere-order-db
+    environment:
+      POSTGRES_DB: akhil
+      POSTGRES_USER: akhil
+      POSTGRES_PASSWORD: "123456"
+    volumes:
+      - order_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks: [shopsphere-network]
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U akhil"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  catalog_db:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: shopsphere-catalog-db
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: single-node
+    volumes:
+      - catalog_db_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks: [shopsphere-network]
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    restart: unless-stopped
+
+  # Local SMTP catcher — Alertmanager's email_configs send here.
+  mailpit:
+    image: axllent/mailpit:v1.20
+    container_name: shopsphere-mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks: [shopsphere-network]
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8025/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  # ══════════════════════════════════════════════════════════════════════
+  # Application services
+  # ══════════════════════════════════════════════════════════════════════
+
+  account:
+    build:
+      context: .
+      dockerfile: ./docker/account.app.dockerfile
+    image: shopsphere/account:local
+    container_name: shopsphere-account
+    environment:
+      DATABASE_URL: "postgres://akhil:123456@account_db/akhil?sslmode=disable"
+      METRICS_PORT: "8081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317"
+    networks: [shopsphere-network]
+    mem_limit: 384m
+    depends_on:
+      account_db:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    labels:
+      - "com.shopsphere.service=account"
+
+  # One-off job: seeds the default admin login with a real bcrypt hash
+  # (computed at container start, not hardcoded — see
+  # account/cmd/seed-admin/main.go). Runs once per `docker compose up`;
+  # idempotent, so safe on every restart.
+  seed-admin:
+    build:
+      context: .
+      dockerfile: ./docker/seed-admin.dockerfile
+    container_name: shopsphere-seed-admin
+    environment:
+      DATABASE_URL: "postgres://akhil:123456@account_db/akhil?sslmode=disable"
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_NAME: Admin
+      ADMIN_PASSWORD: password123
+    networks: [shopsphere-network]
+    depends_on:
+      account_db:
+        condition: service_healthy
+    restart: "no"
+
+  catalog:
+    build:
+      context: .
+      dockerfile: ./docker/catalog.app.dockerfile
+    image: shopsphere/catalog:local
+    container_name: shopsphere-catalog
+    environment:
+      DATABASE_URL: "http://catalog_db:9200"
+      METRICS_PORT: "8081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317"
+    networks: [shopsphere-network]
+    mem_limit: 384m
+    depends_on:
+      catalog_db:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    labels:
+      - "com.shopsphere.service=catalog"
+
+  order:
+    build:
+      context: .
+      dockerfile: ./docker/order.app.dockerfile
+    image: shopsphere/order:local
+    container_name: shopsphere-order
+    environment:
+      DATABASE_URL: "postgres://akhil:123456@order_db/akhil?sslmode=disable"
+      ACCOUNT_SERVICE_URL: "account:8080"
+      CATALOG_SERVICE_URL: "catalog:8080"
+      METRICS_PORT: "8081"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317"
+    networks: [shopsphere-network]
+    mem_limit: 384m
+    depends_on:
+      order_db:
+        condition: service_healthy
+      account:
+        condition: service_healthy
+      catalog:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    labels:
+      - "com.shopsphere.service=order"
+
+  graphql:
+    build:
+      context: .
+      dockerfile: ./docker/graphql.app.dockerfile
+    image: shopsphere/graphql:local
+    container_name: shopsphere-graphql
+    ports:
+      - "8080:8080"
+    environment:
+      ACCOUNT_SERVICE_URL: "account:8080"
+      CATALOG_SERVICE_URL: "catalog:8080"
+      ORDER_SERVICE_URL: "order:8080"
+      METRICS_PORT: "8081"
+      JWT_SECRET: "local-dev-secret-change-me"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317"
+    networks: [shopsphere-network]
+    mem_limit: 384m
+    depends_on:
+      account:
+        condition: service_healthy
+      catalog:
+        condition: service_healthy
+      order:
+        condition: service_healthy
+      seed-admin:
+        condition: service_completed_successfully
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    labels:
+      - "com.shopsphere.service=graphql-gateway"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend.app.dockerfile
+      args:
+        # Vite bakes this in at build time — must be an address the
+        # BROWSER can reach, not a compose-internal hostname.
+        VITE_GRAPHQL_URL: http://localhost:8080/graphql
+    image: shopsphere/frontend:local
+    container_name: shopsphere-frontend
+    ports:
+      - "5173:80"
+    networks: [shopsphere-network]
+    mem_limit: 128m
+    depends_on:
+      graphql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    labels:
+      - "com.shopsphere.service=frontend"
+
+  # ══════════════════════════════════════════════════════════════════════
+  # Observability — traces
+  # ══════════════════════════════════════════════════════════════════════
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.110.0
+    container_name: shopsphere-otel-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./observability/otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    networks: [shopsphere-network]
+    mem_limit: 256m
+    depends_on:
+      tempo:
+        condition: service_started
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: shopsphere-tempo
+    command: ["-config.file=/etc/tempo/tempo.yml"]
+    volumes:
+      - ./observability/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data:/var/tempo
+    ports:
+      - "3200:3200"
+    networks: [shopsphere-network]
+    mem_limit: 512m
+    restart: unless-stopped
+
+  # ══════════════════════════════════════════════════════════════════════
+  # Observability — logs
+  # ══════════════════════════════════════════════════════════════════════
+
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: shopsphere-loki
+    command: ["-config.file=/etc/loki/loki-config.yml"]
+    volumes:
+      - ./observability/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki_data:/loki
+    ports:
+      - "3100:3100"
+    networks: [shopsphere-network]
+    mem_limit: 512m
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: shopsphere-promtail
+    command: ["-config.file=/etc/promtail/promtail-config.yml"]
+    volumes:
+      - ./observability/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks: [shopsphere-network]
+    mem_limit: 128m
+    depends_on:
+      loki:
+        condition: service_started
+    restart: unless-stopped
+
+  # ══════════════════════════════════════════════════════════════════════
+  # Observability — metrics, alerting, dashboards
+  # ══════════════════════════════════════════════════════════════════════
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: shopsphere-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-remote-write-receiver
+      - --web.enable-lifecycle
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus/alerts.yml:/etc/prometheus/rules/alerts.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks: [shopsphere-network]
+    mem_limit: 512m
+    depends_on:
+      - account
+      - catalog
+      - order
+      - graphql
+      - node-exporter
+      - cadvisor
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://localhost:9090/-/healthy"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: shopsphere-alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./observability/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks: [shopsphere-network]
+    mem_limit: 128m
+    depends_on:
+      mailpit:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # host-level CPU / memory / disk / network ("node" metrics)
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: shopsphere-node-exporter
+    command:
+      - --path.rootfs=/host
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro,rslave
+    pid: host
+    ports:
+      - "9100:9100"
+    networks: [shopsphere-network]
+    mem_limit: 128m
+    restart: unless-stopped
+
+  # per-container CPU / memory for every service in this compose project
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: shopsphere-cadvisor
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8081:8080"
+    networks: [shopsphere-network]
+    mem_limit: 256m
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: shopsphere-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_FEATURE_TOGGLES_ENABLE: "traceqlEditor"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3001:3000"
+    networks: [shopsphere-network]
+    mem_limit: 256m
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+      - alertmanager
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
