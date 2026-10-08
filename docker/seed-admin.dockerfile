@@ -2,6 +2,7 @@ FROM golang:1.23-alpine AS build
 RUN apk add --no-cache gcc g++ make ca-certificates git
 WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
 COPY go.mod go.sum* ./
+COPY pkg pkg
 COPY account account
 ENV GOFLAGS=-mod=mod
 
