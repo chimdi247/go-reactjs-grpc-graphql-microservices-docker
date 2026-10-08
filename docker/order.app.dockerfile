@@ -7,7 +7,8 @@ COPY account account
 COPY catalog catalog
 COPY order order
 ENV GOFLAGS=-mod=mod
-RUN go get google.golang.org/genproto@latest && go mod tidy
+
+RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go mod tidy
 RUN go build -o /go/bin/app ./order/cmd/order
 
 FROM alpine:3.20

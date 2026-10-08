@@ -5,7 +5,8 @@ COPY go.mod go.sum* ./
 COPY pkg pkg
 COPY catalog catalog
 ENV GOFLAGS=-mod=mod
-RUN go get google.golang.org/genproto@latest && go mod tidy
+
+RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go mod tidy
 RUN go build -o /go/bin/app ./catalog/cmd/catalog
 
 FROM alpine:3.20

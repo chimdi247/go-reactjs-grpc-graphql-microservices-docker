@@ -8,7 +8,9 @@ COPY catalog catalog
 COPY order order
 COPY graphql graphql
 ENV GOFLAGS=-mod=mod
-RUN go get google.golang.org/genproto@latest && go mod tidy
+
+RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go mod tidy
+
 # Regenerates graphql/generated.go + models_gen.go from schema.graphql via
 # the go:generate directive in graphql/main.go — this is the project's
 # own documented codegen mechanism (see README), just run at image build

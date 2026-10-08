@@ -10,7 +10,7 @@ COPY frontend/. ./
 # Vite inlines VITE_* env vars into the bundle at build time — this must
 # be an address the BROWSER can reach (docker-compose passes
 # http://localhost:8080/graphql), not a compose-internal hostname.
-ARG VITE_GRAPHQL_URL=http://localhost:8080/graphql
+ARG VITE_GRAPHQL_URL=http://34.171.152.81:8080/graphql
 ENV VITE_GRAPHQL_URL=${VITE_GRAPHQL_URL}
 
 RUN npm run build

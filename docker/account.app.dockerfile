@@ -7,7 +7,8 @@ COPY account account
 ENV GOFLAGS=-mod=mod
 # the 2019 genproto drags in packages that now live in split modules;
 # bump it so go mod tidy stops seeing duplicates
-RUN go get google.golang.org/genproto@latest && go mod tidy
+
+RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go mod tidy
 RUN go build -o /go/bin/app ./account/cmd/account
 
 FROM alpine:3.20

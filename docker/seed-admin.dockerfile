@@ -4,7 +4,8 @@ WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
 COPY go.mod go.sum* ./
 COPY account account
 ENV GOFLAGS=-mod=mod
-RUN go get google.golang.org/genproto@latest && go mod tidy
+
+RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go mod tidy
 RUN go build -o /go/bin/seed-admin ./account/cmd/seed-admin
 
 FROM alpine:3.20
