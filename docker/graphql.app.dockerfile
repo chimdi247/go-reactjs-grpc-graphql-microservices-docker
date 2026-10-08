@@ -16,8 +16,26 @@ RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go m
 # own documented codegen mechanism (see README), just run at image build
 # time instead of being committed to source, so it's always in sync with
 # schema.graphql (including the login/me/totalAccounts additions).
-RUN go generate ./graphql/...
+
+
+
+# models.go (mapped in gqlgen.yml) needs the generated Order type, and the other
+# hand-written files need generated.go. Break the cycle in two passes:
+#  1) hide everything except models.go, add a stub Order, generate (models_gen.go)
+#  2) drop the stub, generate again, then restore the hand-written files
+RUN cd graphql && \
+    mkdir /tmp/hand && \
+    find . -maxdepth 1 -name '*.go' ! -name models.go -exec mv {} /tmp/hand/ \; && \
+    printf 'package main\n\ntype Order struct{}\n' > stub.go && \
+    (go run github.com/99designs/gqlgen || true) && \
+    rm -f stub.go generated.go && \
+    go run github.com/99designs/gqlgen && \
+    mv /tmp/hand/*.go .
+
+
 RUN go build -o /go/bin/app ./graphql
+
+
 
 FROM alpine:3.20
 RUN apk add --no-cache ca-certificates wget
