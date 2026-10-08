@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS build
+FROM golang:1.23-alpine AS build
 RUN apk add --no-cache gcc g++ make ca-certificates git
 WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
 COPY go.mod go.sum* ./
@@ -8,7 +8,7 @@ COPY catalog catalog
 COPY order order
 COPY graphql graphql
 ENV GOFLAGS=-mod=mod
-RUN go mod tidy
+RUN go get google.golang.org/genproto@latest && go mod tidy
 # Regenerates graphql/generated.go + models_gen.go from schema.graphql via
 # the go:generate directive in graphql/main.go — this is the project's
 # own documented codegen mechanism (see README), just run at image build

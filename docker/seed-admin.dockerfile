@@ -1,10 +1,10 @@
-FROM golang:1.22-alpine AS build
+FROM golang:1.23-alpine AS build
 RUN apk add --no-cache gcc g++ make ca-certificates git
 WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
 COPY go.mod go.sum* ./
 COPY account account
 ENV GOFLAGS=-mod=mod
-RUN go mod tidy
+RUN go get google.golang.org/genproto@latest && go mod tidy
 RUN go build -o /go/bin/seed-admin ./account/cmd/seed-admin
 
 FROM alpine:3.20

@@ -1,15 +1,13 @@
-FROM golang:1.22-alpine AS build
+FROM golang:1.23-alpine AS build
 RUN apk add --no-cache gcc g++ make ca-certificates git
 WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
 COPY go.mod go.sum* ./
 COPY pkg pkg
 COPY account account
-# go.sum didn't ship with the new dependencies added for this project
-# (bcrypt, OpenTelemetry) — go mod tidy resolves and pins them here, at
-# real build time, with real network access, rather than a hand-edited
-# go.sum that would just be wrong.
 ENV GOFLAGS=-mod=mod
-RUN go mod tidy
+# the 2019 genproto drags in packages that now live in split modules;
+# bump it so go mod tidy stops seeing duplicates
+RUN go get google.golang.org/genproto@latest && go mod tidy
 RUN go build -o /go/bin/app ./account/cmd/account
 
 FROM alpine:3.20
