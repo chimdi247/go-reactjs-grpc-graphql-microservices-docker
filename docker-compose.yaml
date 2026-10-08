@@ -89,12 +89,16 @@ services:
     environment:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       discovery.type: single-node
+      xpack.ml.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.watcher.enabled: "false"
+      xpack.security.enabled: "false"
     volumes:
       - catalog_db_data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
     networks: [shopsphere-network]
-    mem_limit: 768m
+    mem_limit: 1280m
     healthcheck:
       test: ["CMD-SHELL","wget -qO- http://localhost:9200/_cluster/health || exit 1"]
       interval: 10s
