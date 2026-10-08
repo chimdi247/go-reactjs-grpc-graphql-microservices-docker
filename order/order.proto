@@ -50,6 +50,7 @@ message GetOrdersForAccountResponse {
 service OrderService {
     rpc PostOrder (PostOrderRequest) returns (PostOrderResponse) {
     }
+
     rpc GetOrdersForAccount (GetOrdersForAccountRequest) returns (GetOrdersForAccountResponse) {
     }
 }
