@@ -11,7 +11,7 @@
 #
 #   Frontend      → http://localhost:5173
 #   Admin login   → admin@example.com / password123  (seeded automatically)
-#   GraphQL API   → http://localhost:8080/graphql  (playground at /playground)
+#   GraphQL API   → http://localhost:8080/playground  (playground at /playground)
 #   Grafana       → http://localhost:3001          (admin / admin)
 #   Alertmanager  → http://localhost:9093
 #   Mail inbox    → http://localhost:8025
