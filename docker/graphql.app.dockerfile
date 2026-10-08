@@ -23,18 +23,18 @@ RUN go get google.golang.org/genproto@v0.0.0-20241007155032-5fefd90f89a9 && go m
 # hand-written files need generated.go. Break the cycle in two passes:
 #  1) hide everything except models.go, add a stub Order, generate (models_gen.go)
 #  2) drop the stub, generate again, then restore the hand-written files
+
+# models.go's Orders field is served by the accountResolver (resolver: true in
+# gqlgen.yml), so drop it to let models.go compile before generation. Hide the
+# other hand-written files, generate once, then restore them.
 RUN cd graphql && \
+    sed -i '/Orders/d' models.go && \
+    rm -f generated.go models_gen.go && \
     mkdir /tmp/hand && \
     find . -maxdepth 1 -name '*.go' ! -name models.go -exec mv {} /tmp/hand/ \; && \
-    printf 'package main\n\ntype Order struct{}\n' > stub.go && \
-    (go run github.com/99designs/gqlgen || true) && \
-    rm -f stub.go generated.go && \
     go run github.com/99designs/gqlgen && \
     mv /tmp/hand/*.go .
-
-
 RUN go build -o /go/bin/app ./graphql
-
 
 
 FROM alpine:3.20
